@@ -1,13 +1,34 @@
 # -*- coding: utf-8 -*-
 import telebot
 from telebot import types
+import os
+from flask import Flask, request
 
 bot = telebot.TeleBot('432474721:AAEzipq0SAiywuZyRE1-nVhHVVvenHq_Vug')
+
+server = Flask(__name__)
 
 @bot.message_handler(commands=['start'])
 def start(message):
     sent = bot.send_message(message.chat.id, 'Добрый день. Мы поможем Вам доставить груз из Китая. Для начала давайте познакомимся. Как Вас зовут?')
     bot.register_next_step_handler(sent, hello)
+
+
+
+
+@server.route("/bot", methods=['POST'])
+def getMessage():
+    bot.process_new_updates([telebot.types.Update.de_json(request.stream.read().decode("utf-8"))])
+    return "!", 200
+
+@server.route("/")
+def webhook():
+    bot.remove_webhook()
+    bot.set_webhook(url="https://chat3test.herokuapp.com/")
+    return "!", 200
+
+server.run(host="0.0.0.0", port=os.environ.get('PORT', 5000))
+server = Flask(__name__)
 
 def hello(message):
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
@@ -263,5 +284,3 @@ def help(message):
         bot.send_message(
             message.chat.id,
             'Попробую передать Ваше сообщение нашему отвественному менеджеру')
-
-bot.polling(none_stop=True)
