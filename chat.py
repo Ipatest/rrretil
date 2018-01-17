@@ -22,7 +22,7 @@ def echo_message(message):
     bot.reply_to(message, message.text)
 
 
-@server.route("/bot", methods=['POST'])
+@server.route("/432474721:AAEzipq0SAiywuZyRE1-nVhHVVvenHq_Vug", methods=['POST'])
 def getMessage():
     bot.process_new_updates([telebot.types.Update.de_json(request.stream.read().decode("utf-8"))])
     return "!", 200
@@ -30,11 +30,11 @@ def getMessage():
 @server.route("/")
 def webhook():
     bot.remove_webhook()
-    bot.set_webhook(url="https://chat3test.herokuapp.com/bot")
+    bot.set_webhook(url="https://chat3test.herokuapp.com/432474721:AAEzipq0SAiywuZyRE1-nVhHVVvenHq_Vug")
     return "!", 200
 
 server.run(host="0.0.0.0", port=os.environ.get('PORT', 5000))
-server = Flask(__name__)
+
 
 def hello(message):
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
