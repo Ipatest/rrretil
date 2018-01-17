@@ -3,37 +3,48 @@ import telebot
 from telebot import types
 import os
 from flask import Flask, request
-
-bot = telebot.TeleBot('432474721:AAEzipq0SAiywuZyRE1-nVhHVVvenHq_Vug')
+token=432474721:AAEzipq0SAiywuZyRE1-nVhHVVvenHq_Vug
+bot = telebot.TeleBot('token')
 
 server = Flask(__name__)
+
+
+@app.route("/telegram/", methods=['POST'])
+def hello():
+    message = json.loads(request.data)
+    if message['message']['text'] == '/ping':
+        bot.send_message(message['message']['chat']['id'], 'Pong!').wait()
+    return 'ok'
+
+class Bot:
+    def __init__(self, token, debug=False):
+        self._token = token
+        self._updater = Updater(token)
+        self._debug = debug
+
+        self._init_handlers()
+
+    def run(self):
+        port = int(os.environ.get('PORT', '5000'))
+        self._updater.start_webhook(listen='0.0.0.0', port=port,
+                                    url_path=self._token)
+        self._updater.bot.set_webhook(os.environ.get("https://chat3test.herokuapp.com") +
+                                      self._token)
+        self._updater.idle()
+
+    def _init_handlers(self):
+        self._updater.dispatcher.add_handler(CommandHandler('rate', self._check_rate))
+
+
+
+
 
 @bot.message_handler(commands=['start'])
 def start(message):
     sent = bot.send_message(message.chat.id, 'Добрый день. Мы поможем Вам доставить груз из Китая. Для начала давайте познакомимся. Как Вас зовут?')
     bot.register_next_step_handler(sent, hello)
 
-@bot.message_handler(commands=['start'])
-def start(message):
-    bot.reply_to(message, 'Hello, ' + message.from_user.first_name)
 
-@bot.message_handler(func=lambda message: True, content_types=['text'])
-def echo_message(message):
-    bot.reply_to(message, message.text)
-
-
-@server.route("/432474721:AAEzipq0SAiywuZyRE1-nVhHVVvenHq_Vug", methods=['POST'])
-def getMessage():
-    bot.process_new_updates([telebot.types.Update.de_json(request.stream.read().decode("utf-8"))])
-    return "!", 200
-
-@server.route("/")
-def webhook():
-    bot.remove_webhook()
-    bot.set_webhook(url="https://chat3test.herokuapp.com/432474721:AAEzipq0SAiywuZyRE1-nVhHVVvenHq_Vug")
-    return "!", 200
-
-server.run(host="0.0.0.0", port=os.environ.get('PORT', 5000))
 
 
 def hello(message):
