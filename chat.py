@@ -1,39 +1,15 @@
 # -*- coding: utf-8 -*-
 import telebot
+import config
 from telebot import types
 import os
 from flask import Flask, request
-token=432474721:AAEzipq0SAiywuZyRE1-nVhHVVvenHq_Vug
-bot = telebot.TeleBot('token')
-
-server = Flask(__name__)
 
 
-@app.route("/telegram/", methods=['POST'])
-def hello():
-    message = json.loads(request.data)
-    if message['message']['text'] == '/ping':
-        bot.send_message(message['message']['chat']['id'], 'Pong!').wait()
-    return 'ok'
 
-class Bot:
-    def __init__(self, token, debug=False):
-        self._token = token
-        self._updater = Updater(token)
-        self._debug = debug
+bot = telebot.TeleBot(config.token)
 
-        self._init_handlers()
 
-    def run(self):
-        port = int(os.environ.get('PORT', '5000'))
-        self._updater.start_webhook(listen='0.0.0.0', port=port,
-                                    url_path=self._token)
-        self._updater.bot.set_webhook(os.environ.get("https://chat3test.herokuapp.com") +
-                                      self._token)
-        self._updater.idle()
-
-    def _init_handlers(self):
-        self._updater.dispatcher.add_handler(CommandHandler('rate', self._check_rate))
 
 
 
@@ -301,3 +277,6 @@ def help(message):
         bot.send_message(
             message.chat.id,
             'Попробую передать Ваше сообщение нашему отвественному менеджеру')
+
+if __name__ == '__main__':
+    bot.polling(none_stop=True)
