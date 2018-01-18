@@ -20,7 +20,8 @@ def echo_message(message):
 
 def hello(message):
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    keyboard.add(*[types.KeyboardButton(name) for name in [text='Отправить номер телефона', request_contact=True]])
+    phone  =  types.KeyboardButton(text='Отправить номер телефона', request_contact=True)
+    keyboard.add(phone)
     bot.send_message(message.chat.id, 'Привет, {name}. Рад Вас видеть. Пожалуйста, отправьте Ваш контакт, нажав кнопку ниже '.format(name=message.text),reply_markup=keyboard)
     bot.register_next_step_handler(message, hello2)
 
