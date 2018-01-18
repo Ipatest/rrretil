@@ -14,15 +14,15 @@ def start(message):
        sent = bot.send_message(message.chat.id, 'Добрый день. Мы поможем Вам доставить груз из Китая. Для начала давайте познакомимся. Как Вас зовут?')
        bot.register_next_step_handler(sent, hello)
 
-@bot.message_handler(func=lambda message: True, content_types=['text'])
-def echo_message(message):
-    bot.reply_to(message, message.text)
+#@bot.message_handler(func=lambda message: True, content_types=['text'])
+#def echo_message(message):
+ #   bot.reply_to(message, message.text)
 
 def hello(message):
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
     phone  =  types.KeyboardButton(text='Отправить номер телефона', request_contact=True)
     keyboard.add(phone)
-    bot.send_message(message.chat.id, 'Привет, {name}. Рад Вас видеть. Пожалуйста, отправьте Ваш контакт, нажав кнопку ниже '.format(name=message.text),reply_markup=keyboard)
+    bot.send_message(message.chat.id, 'Привет, {name}. Рад Вас видеть. Пожалуйста, отправьте Ваш контакт, нажав кнопку под окном ввода сообщения '.format(name=message.text),reply_markup=keyboard)
     bot.register_next_step_handler(message, hello2)
 
 
