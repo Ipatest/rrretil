@@ -14,9 +14,9 @@ def start(message):
        sent = bot.send_message(message.chat.id, 'Добрый день. Мы поможем Вам доставить груз из Китая. Для начала давайте познакомимся. Как Вас зовут?')
        bot.register_next_step_handler(sent, hello)
 
-#@bot.message_handler(func=lambda message: True, content_types=['text'])
-#def echo_message(message):
- #   bot.reply_to(message, message.text)
+@bot.message_handler(func=lambda message: True, content_types=['text'])
+def echo_message(message):
+    bot.reply_to(message, message.text)
 
 
 def hello(message):
