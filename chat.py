@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 import telebot
-import config
+
 import os
 from flask import Flask, request
 from telebot import types
 
 server = Flask(__name__)
 
-bot = telebot.TeleBot(config.token)
+bot = telebot.TeleBot('token')
 
 @bot.message_handler(commands=['start'])
 def start(message):
