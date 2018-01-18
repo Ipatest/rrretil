@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 import telebot
-
+import config
 import os
 from flask import Flask, request
 from telebot import types
 
 server = Flask(__name__)
 
-bot = telebot.TeleBot('token')
+bot = telebot.TeleBot(config.token)
 
 @bot.message_handler(commands=['start'])
 def start(message):
@@ -18,13 +18,20 @@ def start(message):
 def echo_message(message):
     bot.reply_to(message, message.text)
 
-
 def hello(message):
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    keyboard.add(*[types.KeyboardButton(name) for name in [text='Отправить номер телефона', request_contact=True]])
+    bot.send_message(message.chat.id, 'Привет, {name}. Рад Вас видеть. Пожалуйста, отправьте Ваш контакт, нажав кнопку ниже '.format(name=message.text),reply_markup=keyboard)
+    bot.register_next_step_handler(message, hello2)
+
+
+
+def hello2(message):
+    keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
     keyboard.add(*[types.KeyboardButton(name) for name in ['Достаточно', 'Недостаточно']])
-    bot.send_message(message.chat.id, 'Привет, {name}. Рад Вас видеть. Пожалуйста, ответьте на несколько вопросов, '
+    bot.send_message(message.chat.id, 'Пожалуйста, ответьте на несколько вопросов, '
                                       'нажимая на кнопки под окном ввода сообщения, и я подберу Вам нужного менеджера.'
-                                      ' Первый вопрос самый основной - достаточно ли у Вас время на доставку?'.format(name=message.text),reply_markup=keyboard)
+                                      ' Первый вопрос самый основной - достаточно ли у Вас время на доставку?',reply_markup=keyboard)
     bot.register_next_step_handler(message, name1)
 
 def name1(message):
